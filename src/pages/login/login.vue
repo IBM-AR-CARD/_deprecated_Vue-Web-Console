@@ -3,11 +3,11 @@
     <div class="login-section" id="left">
       <img id="leftImage" src="../../assets/loginbackground.png" height="960" width="800" alt="loginbackground"/>
     </div>
-    <div class="login-section" id="right">
-      <h1  id="title">IBM AR Business Card</h1>
-      <h2  id="sub_title">{{subtitle}}</h2>
-      <p  id="error" v-if="error"  style="margin-top: 40px;">{{error}}</p>
-      <label class="center " style="height:10px" v-bind:style="[error==='' ? {'margin-top':'78px'} : {'padding-top':'0px;'}]" >
+    <div class="login-section" id="right" v-if="status===0">
+      <p  id="title">IBM AR Business Card</p>
+      <p  id="sub_title">{{subtitle}}</p>
+      <p  id="error" v-if="error"  style="margin-top: 10px;">{{error}}</p>
+      <label  style="height:10px" v-bind:style="[error==='' ? {'margin-top':'48px'} : {'padding-top':'0px;'}]" >
         <input class="input_box"  v-model="username" id="username_box" placeholder="Username">
       </label>
       <label  style="margin-top: 40px;" >
@@ -17,19 +17,67 @@
         <label>
           <input id="checkbox" type="checkbox" v-model="isRemember"><a style="font-size: 15px; color:rgb(67,66,93);vertical-align: middle;">Remember me</a>
         </label>
-        <a id="forgot">Forgot password</a>
+        <a id="forgot" @click="status=2;this.email=''">Forgot password</a>
       </div>
       <div  style="margin-top: 40px; ">
         <label>
           <button id="login_button" type="button" v-on:click="loginOnClick">Login</button>
         </label>
         <label>
-          <button id="signup" type="button">Sign up</button>
+          <button id="signup" type="button" v-on:click="signUpOnClick">Sign up</button>
         </label>
       </div>
-      <div class="term_use"><p style="position: absolute; bottom: 0;width:100%; text-align: center">Term of use. Privacy policy</p></div>
+      <div class="term_use"><p style="position: absolute; bottom: 0;width:100%; text-align: center"></p></div>
     </div>
-  </div>
+    <div class="login-section" id="right" v-if="status===1">
+      <h1  id="title">IBM AR Business Card</h1>
+      <h2  id="sub_title">Please complete to create your account.</h2>
+      <p  id="error" v-if="error"  style="margin-top: 10px;">{{error}}</p>
+      <div v-bind:style="[error==='' ? {'margin-top':'48px'} : {'padding-top':'0px;'}]">
+        <label  >
+          <input class="input_box"  v-model="firstName" id="firstName" placeholder="First name">
+        </label>
+        <label  >
+          <input class="input_box" v-model="lastName"  id="lastName" placeholder="Last name">
+        </label>
+      </div>
+      <label  style="margin-top: 20px">
+        <input class="input_box" v-model="username"  id="username" placeholder="Username">
+      </label>
+      <label  style="margin-top: 20px">
+        <input class="input_box" v-model="email"  placeholder="Email">
+      </label>
+      <label  style="margin-top: 20px">
+        <input class="input_box" v-model="password"  type="password" placeholder="Password">
+      </label>
+      <label  style="margin-top: 20px">
+        <input class="input_box" v-model="confirmPassword"  type="password" placeholder="Confirm Password">
+      </label>
+      <label style="margin-top: 20px">
+        <input id="checkbox" type="checkbox" v-model="agree"><a style="font-size: 15px; color:rgb(67,66,93);vertical-align: middle;">I agree with terms and conditions</a>
+      </label>
+      <label >
+        <button id="login_button" type="button" v-on:click="confirmSignUpOnClick" style="margin-top: 20px">Sign up</button>
+      </label>
+      <a v-on:click="signUpBackToAlreadyOnClick" id="alreadyHave">Already have an account? Sign in.</a>
+      <div class="term_use"><p style="position: absolute; bottom: 0;width:100%; text-align: center"></p></div>
+    </div>
+    <div class="login-section" id="right" v-if="status===2">
+      <h1  id="title">IBM AR Business Card</h1>
+      <h2  id="sub_title">Enter your email and we send you a password reset link.</h2>
+      <p  id="error" v-if="error"  style="margin-top: 10px;">{{error}}</p>
+    <div v-bind:style="[error==='' ? {'margin-top':'48px'} : {'padding-top':'0px;'}]">
+      <label>
+        <input class="input_box"  v-model="Email" placeholder="Email">
+      </label>
+    </div>
+      <label style="margin-top: 20px">
+        <button id="login_button" type="button" v-on:click="sendRequestOnClick" style="margin-top: 20px">Send Request</button>
+      </label>
+      <div class="term_use"><p style="position: absolute; bottom: 0;width:100%; text-align: center"></p></div>
+    </div>
+    </div>
+
 </template>
 <script>
   export default {
@@ -40,7 +88,14 @@
         username:'',
         password:'',
         isRemember:false,
-        error:''
+        error:'',
+        firstName:'',
+        lastName:'',
+        email:'',
+        confirmPassword:'',
+        agree:false,
+        status:0
+        // 0: login 1:signup 2:forget
       }
     },
     methods:{
@@ -52,7 +107,55 @@
         }else{
           this.error = "invalid account"
         }
+      },
+      signUpOnClick:function (event) {
+        this.password=''
+        this.error=''
+        this.username=''
+        this.isRemember=false
+        this.status=1
+      },
+      confirmSignUpOnClick:function (event) {
+        if(this.firstName===''){
+          this.error="Empty first name"
+        }else if(this.lastName===''){
+          this.error="Empty last name"
+        }else if(this.username===''){
+          this.error="Empty username"
+        }else if(this.email===''){
+          this.error="Empty Email"
+        }else if(this.password===''){
+          this.error="Empty password"
+        }else if(this.confirmPassword !== this.password){
+          this.error="confirm password does not match to password"
+        }else if(!this.agree){
+          this.error="You have to agree the terms and conditions"
+        }else{
+          this.error="Success"
+        }
+      },
+      signUpBackToAlreadyOnClick:function () {
+        this.username=''
+        this.password=''
+        this.isRemember=false
+        this.error=''
+        this.firstName=''
+        this.lastName=''
+        this.email=''
+        this.confirmPassword=''
+        this.agree=false
+        this.status=0
+      },
+      sendRequestOnClick:function (event) {
+        if(this.email===''){
+          this.error='Empty Email'
+        }else{
+          this.error=''
+        }
+        this.email=''
+
       }
+
     }
   }
 
@@ -63,7 +166,6 @@
     padding-top: 0;
     position: relative;
     width: 50%;
-    margin-left: 0;
     height: 100vh;
     display: flex;
     flex-direction: column;
@@ -85,7 +187,7 @@
   }
 
   #title{
-    margin-top: 12%;
+    margin-top: 8%;
     height: 5%;
     display: flex;
     font-size:35px;
@@ -95,10 +197,9 @@
     color:rgba(67,66,93,1);
   }
   #sub_title{
-
+    margin-top: auto;
     font-family:Source Sans Pro,serif;
     font-weight:bold;
-    line-height:21px;
     color:rgba(77,79,92,0.5);
     font-size: 18px;
   }
@@ -150,6 +251,20 @@
   #error{
     font-size: 16px;
     color: rgb(255,106,106);
-
+  }
+  #firstName{
+    width:160px;
+    margin-right: 10px;
+  }
+  #lastName{
+    width:160px;
+    margin-left: 10px;
+  }
+  #alreadyHave{
+    margin-top: 20px;
+    font-size: 15px;
+    font-family: Source Code Pro,serif;
+    color: rgb(66,67,93);
+    text-decoration: underline;
   }
 </style>
