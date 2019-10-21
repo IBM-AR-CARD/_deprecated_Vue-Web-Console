@@ -176,7 +176,7 @@
     top: 0;
   }
   #barTitle{
-    width:163px;
+    width:200px;
     font-size:18px;
     font-family:Source Sans Pro,serif;
     font-weight:400;
