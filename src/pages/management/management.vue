@@ -53,7 +53,9 @@
     </div>
   </div>
     <h1 id="content_title">{{getContentTitle}}</h1>
-    <div id="content" ></div>
+    <transition name="fade">
+    <div id="content"></div>
+    </transition>
   </div>
 </div>
 </template>
@@ -80,6 +82,9 @@
           return 'Favourite'
         }
       }
+    },
+    created() {
+      console.log('Component has been created!');
     }
   }
 </script>
@@ -223,15 +228,36 @@
     font-weight:400;
     line-height:40px;
     color:rgba(67,66,93,1);
+    transition: background-color 0.2s ease-in-out ;
   }
-  #content{
+  #content {
     flex-grow: 1;
     width: 80%;
-    height:90%;
+    height: 90%;
     background-color: white;
     margin-bottom: 5%;
-
+  }
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity 1s;
+  }
+  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
+  }
+  div {
+    opacity: 1;
+    animation-name: fadeInOpacity;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-out;
+    animation-duration: 0.5s;
   }
 
+  @keyframes fadeInOpacity {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
 
 </style>

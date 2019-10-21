@@ -259,6 +259,10 @@
   #error{
     font-size: 16px;
     color: rgb(255,106,106);
+    animation-name: fadeInOpacity;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-out;
+    animation-duration: 0.5s;
   }
   #firstName{
     width:160px;
@@ -291,4 +295,5 @@
       opacity: 1;
     }
   }
+
 </style>
