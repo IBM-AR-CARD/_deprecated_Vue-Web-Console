@@ -134,7 +134,7 @@
         }else if(!this.agree){
           this.error="You have to agree the terms and conditions"
         }else{
-          this.error="Success"
+          this.$router.push('/management/'+ this.username)
         }
       },
       signUpBackToAlreadyOnClick:function () {

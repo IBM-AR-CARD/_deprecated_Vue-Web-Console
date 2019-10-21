@@ -30,12 +30,12 @@
         <p id="navigator_text">Favourite</p>
       </div>
     </div>
-    <div class="navigator_item" style="position: absolute;bottom: 20px;width:260px">
+    <router-link :to="{path:'/login'}"><div class="navigator_item" style="position: absolute;bottom: 20px;width:260px">
       <div id="navigator_content" style="background-color : rgb(67,66,93)">
         <img class="navigator_image" style="margin-left: 5px" src="../../assets/logout.svg" alt="logout">
-        <router-link :to="{path:'/login'}"><p id="navigator_text" style="padding-left: 55px">Log out</p></router-link>
+        <p id="navigator_text" style="padding-left: 55px">Log out</p>
       </div>
-    </div>
+    </div></router-link>
   </div>
   <div id="right">
   <div id="topBar">
