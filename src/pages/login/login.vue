@@ -1,5 +1,5 @@
 <template>
-  <div id="login">
+  <div >
     <div class="login-section" id="left">
       <img id="leftImage" src="../../assets/loginbackground.png" height="960" width="800" alt="loginbackground"/>
     </div>
@@ -17,7 +17,7 @@
         <label>
           <input id="checkbox" type="checkbox" v-model="isRemember"><a style="font-size: 15px; color:rgb(67,66,93);vertical-align: middle;">Remember me</a>
         </label>
-        <a id="forgot" @click="status=2;this.email=''">Forgot password</a>
+        <a id="forgot" v-on:click="forgetOnClick">Forgot password</a>
       </div>
       <div  style="margin-top: 40px; ">
         <label>
@@ -68,7 +68,7 @@
       <p  id="error" v-if="error"  style="margin-top: 10px;">{{error}}</p>
     <div v-bind:style="[error==='' ? {'margin-top':'48px'} : {'padding-top':'0px;'}]">
       <label>
-        <input class="input_box"  v-model="Email" placeholder="Email">
+        <input class="input_box"  v-model="email" placeholder="Email">
       </label>
     </div>
       <label style="margin-top: 20px">
@@ -102,10 +102,13 @@
       loginOnClick:function (event) {
         if(this.username === ''  ){
           this.error = "Empty username"
+          return
         }else if(this.password === ''){
           this.error = "Empty password"
+          return
         }else{
-          this.error = "invalid account"
+          this.$router.push('/management/' + this.username)
+
         }
       },
       signUpOnClick:function (event) {
@@ -152,8 +155,13 @@
         }else{
           this.error=''
         }
-        this.email=''
-
+      },
+      forgetOnClick:function (event) {
+        this.password=''
+        this.error=''
+        this.username=''
+        this.isRemember=false
+        this.status=2
       }
 
     }
@@ -266,5 +274,21 @@
     font-family: Source Code Pro,serif;
     color: rgb(66,67,93);
     text-decoration: underline;
+  }
+  div {
+    opacity: 1;
+    animation-name: fadeInOpacity;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-out;
+    animation-duration: 1s;
+  }
+
+  @keyframes fadeInOpacity {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
   }
 </style>
