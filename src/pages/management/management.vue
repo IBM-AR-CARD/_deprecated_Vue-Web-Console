@@ -126,6 +126,7 @@
     color:rgba(255,255,255,1);
     text-align: center;
     margin: 0 auto;
+    user-select: none;
   }
   .navigator_item{
     width: 100%;
@@ -152,7 +153,8 @@
     padding-left: 20px;
     position: absolute;
     margin-top: -8px;
-    top:50%
+    top:50%;
+    user-select: none;
   }
   #navigator_text{
     margin-top: 6.5%;
@@ -165,6 +167,7 @@
     line-height:21px;
     color:rgba(255,255,255,1);
     opacity:1;
+    user-select: none;
   }
   #topBar{
     width:100%;
