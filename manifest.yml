@@ -1,0 +1,6 @@
+---
+applications:
+ - name: AR BUSINESSCARD
+   random-route: true
+   memory: 256M
+

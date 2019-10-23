@@ -1,0 +1,42 @@
+export default ({
+  mockGetFavourite:function (pageNumber) {
+    return {
+      0:{
+        name:'Tom',
+        description:'Student',
+        avatar:'https://media.licdn.com/dms/image/C5603AQFA_oQhi6-2Cg/profile-displayphoto-shrink_800_800/0?e=1577318400&v=beta&t=kPgSr00jhClyEqqSPRVwxQYf_QCrYOCjd0ytKo_GVuI',
+        country:'UK'
+      },
+      1:{
+        name:'Tom',
+        description:'Student',
+        avatar:'https://media.licdn.com/dms/image/C5603AQFA_oQhi6-2Cg/profile-displayphoto-shrink_800_800/0?e=1577318400&v=beta&t=kPgSr00jhClyEqqSPRVwxQYf_QCrYOCjd0ytKo_GVuI',
+        country:'UK'
+      },
+      2:{
+        name:'Tom',
+        description:'Student',
+        avatar:'https://media.licdn.com/dms/image/C5603AQFA_oQhi6-2Cg/profile-displayphoto-shrink_800_800/0?e=1577318400&v=beta&t=kPgSr00jhClyEqqSPRVwxQYf_QCrYOCjd0ytKo_GVuI',
+        country:'UK'
+      },
+      3:{
+        name:'Tom',
+        description:'Student',
+        avatar:'https://media.licdn.com/dms/image/C5603AQFA_oQhi6-2Cg/profile-displayphoto-shrink_800_800/0?e=1577318400&v=beta&t=kPgSr00jhClyEqqSPRVwxQYf_QCrYOCjd0ytKo_GVuI',
+        country:'UK'
+      },
+      4:{
+        name:'Tom',
+        description:'Student',
+        avatar:'https://media.licdn.com/dms/image/C5603AQFA_oQhi6-2Cg/profile-displayphoto-shrink_800_800/0?e=1577318400&v=beta&t=kPgSr00jhClyEqqSPRVwxQYf_QCrYOCjd0ytKo_GVuI',
+        country:'UK'
+      },
+      5:{
+        name:'Tom',
+        description:'Student',
+        avatar:'https://media.licdn.com/dms/image/C5603AQFA_oQhi6-2Cg/profile-displayphoto-shrink_800_800/0?e=1577318400&v=beta&t=kPgSr00jhClyEqqSPRVwxQYf_QCrYOCjd0ytKo_GVuI',
+        country:'UK'
+      },
+    }
+  }
+})

@@ -53,20 +53,35 @@
     </div>
   </div>
     <h1 id="content_title">{{getContentTitle}}</h1>
-    <transition name="fade">
-    <div id="content"></div>
-    </transition>
+    <div id="content" v-bind:style="[status===0||status===1 ? {'background-color':'rgb(255,255,255)'} : {'background-color':'rgb(240,240,247)'}]">
+      <div v-if="status===2||status===3" class="people_element" v-for="(history,index) in historyList">
+        <img class="avatar" :src="history.avatar" alt="icon">
+        <div class="brief" >
+          <div class="name">
+          {{history.name}}<br>
+          </div>
+          <div class="description">
+          {{history.description}}<br>
+          {{history.country}}
+          </div>
+        </div>
+        <img v-on:click="deleteItem(index)" class="cross" src="../../assets/cross.svg" alt="cross">
+        <div class="horizontal_bar"></div>
+      </div>
+    </div>
   </div>
 </div>
 </template>
 
 <script>
+  import request from '../../utils/request'
   export default {
     name: 'management',
     data(){
       return{
         status:0,
-        id:this.$route.params.id
+        id:this.$route.params.id,
+        historyList:null
         // 0: myCard 1:myAccount 2:ScanHistory 3:favourites
       }
     },
@@ -83,8 +98,13 @@
         }
       }
     },
-    created() {
-      console.log('Component has been created!');
+    mounted() {
+      this.historyList = request.mockGetFavourite(0);
+    },
+    methods:{
+      deleteItem:function (index) {
+        this.$delete(this.historyList,index)
+      }
     }
   }
 </script>
@@ -239,12 +259,11 @@
     height: 90%;
     background-color: white;
     margin-bottom: 5%;
-  }
-  .fade-enter-active, .fade-leave-active {
-    transition: opacity 1s;
-  }
-  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-    opacity: 0;
+    transition: background-color 0.3s ease;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
   }
   div {
     opacity: 1;
@@ -262,5 +281,63 @@
       opacity: 1;
     }
   }
+  .people_element{
+    width:48%;
+    height:30.5%;
+    margin-bottom: 20px;
+    background:rgba(255,255,255,1);
+    box-shadow:0 2px 6px rgba(0,0,0,0.04);
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .avatar{
+    width: 72px;
+    height:72px;
+    border-radius: 50%;
+    margin-top: 14px;
+    margin-left: 24px;
+    user-select: none;
+  }
+  .brief{
+    width: 70%;
+    height :86px;
+    margin-top: 14px;
+    margin-left: 20px;
+    user-select: none;
 
+  }
+  .name{
+    width:100%;
+    height:25px;
+    font-size:18px;
+    font-family:Source Sans Pro,serif;
+    font-weight:bold;
+    line-height:13px;
+    color:rgba(77,79,92,1);
+  }
+  .description{
+    width:100%;
+    height:40px;
+    font-size:15px;
+    font-family:Source Sans Pro,serif;
+    font-weight:400;
+    line-height:25px;
+    color:rgba(67,66,93,1);
+    opacity:0.5;
+  }
+  .horizontal_bar{
+    width:100%;
+    height:0;
+    border:1px solid rgba(241,241,243,1);
+    position: relative;
+    bottom: 15px;
+  }
+  .cross{
+    position :relative;
+    top:14px;
+    right:14px;
+    width:15px;
+    height: 15px;
+    user-select: none;
+  }
 </style>
