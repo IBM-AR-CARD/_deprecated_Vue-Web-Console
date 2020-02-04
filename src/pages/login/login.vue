@@ -8,7 +8,7 @@
       <p  id="sub_title">{{subtitle}}</p>
       <p  id="error" v-if="error"  style="margin-top: 10px;">{{error}}</p>
       <label  style="height:10px" v-bind:style="[error==='' ? {'margin-top':'48px'} : {'padding-top':'0px;'}]" >
-        <input class="input_box"  v-model="username" id="username_box" placeholder="Username">
+        <input class="input_box"  v-model="email" id="email_box" placeholder="email">
       </label>
       <label  style="margin-top: 40px;" >
         <input class="input_box" v-model="password" type="password" id="password_box" placeholder="Password">
@@ -100,16 +100,26 @@
     },
     methods:{
       loginOnClick:function (event) {
-        if(this.username === ''  ){
-          this.error = "Empty username"
+        /*if(this.email === ''){
+          this.error = "Empty email address"
           return
         }else if(this.password === ''){
           this.error = "Empty password"
           return
-        }else{
-          this.$router.push('/management/' + this.username)
-
         }
+        this.$store.dispatch("LOGIN",{
+          email:this.email,
+          password:this.password
+        })
+        .then(success =>{
+          this.$router.push("/management/"+this.email)
+        })
+        .catch(error =>{
+          var res = JSON.stringify(error.response.data.error);
+          this.error = res.slice(1,-1);
+        })
+        */
+       this.$router.push("/management/"+this.email);
       },
       signUpOnClick:function (event) {
         this.password=''
@@ -150,11 +160,18 @@
         this.status=0
       },
       sendRequestOnClick:function (event) {
-        if(this.email===''){
-          this.error='Empty Email'
-        }else{
-          this.error=''
-        }
+        this.$store.dispatch("SIGNUP",{
+          username:this.username,
+          email:this.email,
+          password:this.password,
+        })
+        .then(success =>{
+          console.log(success);
+          signUpBackToAlreadyOnClick();
+        })
+        .catch(error =>{
+          this.error = error;
+        })      
       },
       forgetOnClick:function (event) {
         this.password=''
