@@ -100,7 +100,7 @@
     },
     methods:{
       loginOnClick:function (event) {
-        /*if(this.email === ''){
+        if(this.email === ''){
           this.error = "Empty email address"
           return
         }else if(this.password === ''){
@@ -118,8 +118,8 @@
           var res = JSON.stringify(error.response.data.error);
           this.error = res.slice(1,-1);
         })
-        */
-       this.$router.push("/management/"+this.email);
+      
+       //this.$router.push("/management/"+this.email);
       },
       signUpOnClick:function (event) {
         this.password=''
@@ -170,7 +170,7 @@
           signUpBackToAlreadyOnClick();
         })
         .catch(error =>{
-          this.error = error;
+          return
         })      
       },
       forgetOnClick:function (event) {

@@ -13,8 +13,8 @@ export default{
                         resolve(data.success);
                     }
                 })
-                .catch(function(error){
-                    reject(error.response.error);
+                .catch(error=>{
+                    reject(error);
                 })
             });
         },
