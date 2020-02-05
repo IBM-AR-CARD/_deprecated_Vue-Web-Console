@@ -8,9 +8,9 @@ export default{
         LOGIN:({commit},payload)=>{
             return new Promise((resolve,reject)=>{
                 axios.post('/user/login',payload)
-                .then(({data,status})=>{
-                    if(status === 200){
-                        resolve(data.success);
+                .then(success=>{
+                    if(success.status === 200){
+                        resolve(true);
                     }
                 })
                 .catch(error=>{
@@ -21,13 +21,13 @@ export default{
         SIGNUP:({commit},payload)=>{
             return new Promise((resolve,reject)=>{
                 axios.post('/user/register',payload)
-                .then(({data,status})=>{
-                    if(status === 200){
-                        resolve(data.response.data.success);
+                .then(success=>{
+                    if(success.response.status === 200){
+                        resolve(true);
                     }
                 })
-                .catch(({data,status})=>{
-                    reject(data.error);
+                .catch(error=>{
+                    reject(error);
                 })
             });
         }

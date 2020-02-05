@@ -27,10 +27,10 @@
       <div id="purpleBar" v-bind:style="[status===3 ? {'background-color':'rgb(163,160,251)'} : {'background-color':'rgb(67,66,93)'}]"></div>
       <div id="navigator_content" v-bind:style="[status===3 ? {'background-color':'rgb(86,85,110)'} : {'background-color':'rgb(67,66,93)'}]">
         <img class="navigator_image" src="../../assets/favourite.svg" alt="favourite">
-        <p id="navigator_text">Favourite</p>
+        <p id="navigator_text">Favorite</p>
       </div>
     </div>
-    <router-link :to="{path:'/login'}"><div class="navigator_item" style="position: absolute;bottom: 20px;width:260px">
+    <div class="navigator_item" style="position: absolute;bottom: 20px;width:260px" >
       <div id="navigator_content" style="background-color : rgb(67,66,93)">
         <img class="navigator_image" style="margin-left: 5px" src="../../assets/logout.svg" alt="logout">
         <p id="navigator_text" style="padding-left: 55px">Log out</p>
@@ -54,7 +54,7 @@
   </div>
     <h1 id="content_title">{{getContentTitle}}</h1>
     <div id="content" v-bind:style="[status===0||status===1 ? {'background-color':'rgb(255,255,255)'} : {'background-color':'rgb(240,240,247)'}]">
-      <div v-if="status===2||status===3" class="people_element" v-for="(history,index) in historyList">
+      <div v-if="status===2" class="people_element" v-for="(history,index) in historyList">
         <img class="avatar" :src="history.avatar" alt="icon">
         <div class="brief" >
           <div class="name">
@@ -68,6 +68,20 @@
         <img v-on:click="deleteItem(index)" class="cross" src="../../assets/cross.svg" alt="cross">
         <div class="horizontal_bar"></div>
       </div>
+      <div v-if="status===3" class="people_element" v-for="(favorite,index) in favoriteList">
+        <img class="avatar" :src="favorite.avatar" alt="icon">
+        <div class="brief" >
+          <div class="name">
+          {{favorite.name}}<br>
+          </div>
+          <div class="description">
+          {{favorite.description}}<br>
+          {{favorite.country}}
+          </div>
+        </div>
+        <img v-on:click="deleteItem(index)" class="cross" src="../../assets/cross.svg" alt="cross">
+        <div class="horizontal_bar"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -75,14 +89,17 @@
 
 <script>
   import request from '../../utils/request'
+  import axios from 'axios'
   export default {
     name: 'management',
     data(){
       return{
         status:0,
         id:this.$route.params.id,
-        historyList:null
-        // 0: myCard 1:myAccount 2:ScanHistory 3:favourites
+        historyList:null,
+        favoriteList:null,
+        profile:null
+        // 0: myCard 1:myAccount 2:ScanHistory 3:favorites
       }
     },
     computed:{
@@ -94,17 +111,59 @@
         }else if(this.status===2){
           return 'History'
         }else if(this.status===3){
-          return 'Favourite'
+          return 'Favorite'
         }
       }
     },
-    mounted() {
-      this.historyList = request.mockGetFavourite(0);
+    mounted(){
+      this.getHistoryList();
+      this.getFavoriateList();
     },
     methods:{
       deleteItem:function (index) {
-        this.$delete(this.historyList,index)
-      }
+        this.$delete(this.historyList,index);
+      },
+      getHistoryList:function(){
+        this.$store.dispatch("GET_HISTORY",{
+          _id:this.id
+        })
+        .catch(error=>{
+          return;
+        })
+        .then(data=>{
+          var newhistorylist = {};
+          var length = Object.keys(data.list).length;
+          var i = 0;
+          for(i = 0; i <length;i++){
+            var x = i.toString();
+            newhistorylist[x] = JSON.parse(JSON.stringify(data.list[i]));
+          }
+          this.historyList = newhistorylist;
+        })
+      },
+      getFavoriateList:function(){
+        this.$store.dispatch("GET_FAVORIATE",{
+          _id:this.id
+        })
+        .catch(error=>{
+          return;
+        })
+        .then(data=>{
+          var newfavoritelist = {};
+          var length = Object.keys(data.list).length;
+          var i = 0;
+          for(i = 0; i <length;i++){
+            var x = i.toString();
+            newfavoritelist[x] = JSON.parse(JSON.stringify(data.list[i]));
+          }
+          this.favoriteList = newfavoritelist;
+        })
+      },
+      //logoutclick:function(event){
+        //this.$store.dispatch("LOGOUT",{
+
+        //})
+      //}
     }
   }
 </script>
