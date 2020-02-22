@@ -19,6 +19,20 @@ export default{
                 })
             });
         },
+
+        UPDATE_PROFILE:({commit},payload)=>{
+            return new Promise((resolve,reject)=>{
+                axios.post('/profile/update',payload)
+                .then(success=>{
+                    if(success.status === 200){
+                        resolve(success.data);
+                    }
+                })
+                .catch(error=>{
+                    reject(error)
+                })
+            })
+        },
         GET_HISTORY:({commit},payload)=>{
             return new Promise((resolve,reject)=>{
                 axios.get('/history/get',{

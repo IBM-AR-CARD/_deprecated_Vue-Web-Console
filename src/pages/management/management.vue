@@ -69,11 +69,11 @@
     <div class="row">
       <div class="profile_box">
            <span class="profile_title" style="margin-right:35px;">Model:</span>
-             <select style="height:20px;">
-               <option value="0">{{model}}</option>
-               <option value="1">untitled1</option>
-               <option value="2">untitled2</option>
-               <option value="3">untitled3</option>
+             <select id="model" style="height:20px;">
+               <option value="Jiraiya">{{model}}</option>
+               <option value="untitled1">untitled1</option>
+               <option value="untitled2">untitled2</option>
+               <option value="untitled3">untitled3</option>
         </select>
       </div>
     </div>
@@ -85,19 +85,19 @@
     <div class="profile_box">
       <label class="profile_title">One-Sentence Description</label>
       <div>
-      <textarea placeholder="tell us more about yourself" class="textarea_inner" style="padding:8px" ></textarea>
+      <textarea id="description" placeholder="tell us more about yourself" class="textarea_inner" style="padding:8px" value="" ></textarea>
       </div>
     </div>
      <div class="profile_box">
       <label class="profile_title">Work experience</label>
       <div>
-      <textarea placeholder="Where do you currently work? How about 3 years ago?" class="textarea_inner" style="padding:8px"></textarea>
+      <textarea id="experience" placeholder="Where do you currently work? How about 3 years ago?" class="textarea_inner" style="padding:8px"></textarea>
       </div>
     </div>
     <div class="profile_box">
       <label class="profile_title">Education</label>
       <div>
-      <textarea placeholder="Where did you attend your uni and high school? How was your grade?" class="textarea_inner" style="padding:8px"></textarea>
+      <textarea id="education" placeholder="Where did you attend your uni and high school? How was your grade?" class="textarea_inner" style="padding:8px"></textarea>
       </div>
     </div>
     <div style="margin-bottom:10px;margin-left:400px">
@@ -193,15 +193,18 @@
           this.lastname = success.lastname;
           this.model = success.model;
           this.description = success.description;
-          this.experience = success.experence;
+          this.experience = success.experience;
           this.education = success.education;
-          this.getinitRadio('gender',this.gender);
+          document.getElementById("description").value=this.description;
+          document.getElementById("experience").value=this.experience;
+          document.getElementById("education").value=this.education;
+          this.getInitRadio('gender',this.gender);
         })
         .catch(error=>{
         })
       },
       deleteItem:function (index) {
-        this.$store.dispatch("DELETE_ITEM",{
+        this.$store.dispatch("DELETE_FAVORITE",{
           userid:this.favoriteList[index]._id
         })
         .then(success=>{
@@ -256,16 +259,41 @@
           this.$router.push("/login");
           })
         },
-    saveOnClick:function(event){
-      return;
-    },
-    getinitRadio:function(rName,rValue){
+    getInitRadio:function(rName,rValue){
         var rObj = document.getElementsByName(rName);
         for(var i= 0;i<rObj.length;i++){
           if(rObj[i].value == rValue){
             rObj[i].checked = 'checked';
           }
         }
+      },
+      saveOnClick:function(event){
+      this.description = document.getElementById("description").value;
+      this.education = document.getElementById("education").value;
+      this.experience = document.getElementById("experience").value;
+      var rObj = document.getElementsByName("gender");
+      for(var i= 0;i<rObj.length;i++){
+        if(rObj[i].checked){
+          this.gender = rObj[i].value;
+        }
+      }
+      var rObjModel = document.getElementById("model");
+      this.model = rObjModel.options[rObjModel.selectedIndex].value;
+      
+      this.$store.dispatch("UPDATE_PROFILE",{
+        _id:localStorage.getItem("id"),
+        description:this.description,
+        experience:this.experience,
+        education:this.education,
+        gender:this.gender,
+        model:this.model
+      })
+      .then(success=>{
+        alert("update successful!")
+      })
+      .catch(error=>{
+        alert("error!");
+      })
       }
   }
 }
