@@ -107,7 +107,7 @@
           this.error = "Empty password"
           return
         }
-        this.$store.dispatch("LOGIN",{
+        this.$store.dispatch("userLogin",{
           email:this.email,
           password:this.password
         })

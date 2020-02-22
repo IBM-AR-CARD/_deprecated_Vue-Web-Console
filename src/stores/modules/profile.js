@@ -6,14 +6,25 @@ export default{
     getters:{},
     mutations:{},
     actions:{
+        GET_PROFILE:({commit},payload)=>{
+            return new Promise((resolve,reject)=>{
+                axios.post('/profile/get')
+                .then(success=>{
+                    if(success.status=== 200){
+                        resolve(success.data);
+                    }
+                })
+                .catch(error=>{
+                    reject(error)
+                })
+            });
+        },
         GET_HISTORY:({commit},payload)=>{
             return new Promise((resolve,reject)=>{
                 axios.get('/history/get',{
-                    params:{
-                        _id:payload
-                    }
+                    headers:{'Authorization':'Bearer ' + localStorage.getItem('token')}
                 }).then(success=>{
-                    if(success.status === 200){
+                    if(success.status === 200){               
                         resolve(success.data);
                     }
                 })
@@ -22,12 +33,28 @@ export default{
                 })
             });
         },
+        DELETE_FAVORITE:({commit},payload)=>{
+            return new Promise((resolve,reject)=>{
+                axios.post('favorite/remove',payload,{
+                    headers:{
+                        'Authorization':'Bearer ' + localStorage.getItem('token')
+                    }
+                })
+                .then(success=>{
+                    if(success.status === 200){
+                        resolve(true);
+                    }
+                })
+                .catch(error=>{
+                    reject(error);
+                })
+            });
+        },
+    
         GET_FAVORIATE:({commit},payload)=>{
             return new Promise((resolve,reject)=>{
                 axios.get('/favorite/get',{
-                    params:{
-                        _id:payload
-                    }
+                    headers:{'Authorization':'Bearer ' + localStorage.getItem('token')}
                 }).then(success=>{
                     if(success.status === 200){
                         resolve(success.data);
@@ -39,5 +66,4 @@ export default{
             });
         }
     }
-
 }

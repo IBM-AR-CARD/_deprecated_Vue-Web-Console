@@ -31,11 +31,12 @@
       </div>
     </div>
     <div class="navigator_item" style="position: absolute;bottom: 20px;width:260px" >
-      <div id="navigator_content" style="background-color : rgb(67,66,93)">
+      <div v-on:click="logoutclick" id="navigator_content" style="background-color : rgb(67,66,93)">
         <img class="navigator_image" style="margin-left: 5px" src="../../assets/logout.svg" alt="logout">
         <p id="navigator_text" style="padding-left: 55px">Log out</p>
       </div>
-    </div></router-link>
+    </div>
+    </router-link>
   </div>
   <div id="right">
   <div id="topBar">
@@ -48,14 +49,65 @@
       <p id="userName" >{{id}}</p>
       <img src="../../assets/spanlist.svg" alt="spanlist" style="position:absolute;width: 16px;right: 90px;height:16px;margin-top: -8px;
     top:50%">
-      <img src="../../assets/tempAvatar.svg" alt="avatar" style="position:absolute;width: 40px;right: 20px;height: 40px;margin-top: -20px;
+      <img src="http://henryz.co/uploads/123/1581643199591_compress.jpg" class = "avatar"  style="position:absolute;width: 40px;right: 20px;height: 40px;margin-top: -20px;
     top:50%">
     </div>
   </div>
     <h1 id="content_title">{{getContentTitle}}</h1>
     <div id="content" v-bind:style="[status===0||status===1 ? {'background-color':'rgb(255,255,255)'} : {'background-color':'rgb(240,240,247)'}]">
+      <div v-if="status===0">
+      <div style="margin-top:20px;"  class="row">
+        <div class= "profile_box">
+          <span class="profile_title">Firstname:</span>
+          <span class="input_box">{{firstname}}</span>
+          </div>
+          <div style="margin-left:150px" class="profile_box" >
+            <span class="profile_title">Lastname:</span>
+            <span class="input_box">{{lastname}}</span>
+            </div>
+            </div>
+    <div class="row">
+      <div class="profile_box">
+           <span class="profile_title" style="margin-right:35px;">Model:</span>
+             <select style="height:20px;">
+               <option value="0">{{model}}</option>
+               <option value="1">untitled1</option>
+               <option value="2">untitled2</option>
+               <option value="3">untitled3</option>
+        </select>
+      </div>
+    </div>
+      <div class="profile_box" >
+        <span class="profile_title" style="margin-right:18px;" >Gender:</span>
+          <input name="gender" type="radio" value='2'><label>Male</label>
+           <input name="gender" type="radio" value='1'><label>Female</label>
+      </div>
+    <div class="profile_box">
+      <label class="profile_title">One-Sentence Description</label>
+      <div>
+      <textarea placeholder="tell us more about yourself" class="textarea_inner" style="padding:8px" ></textarea>
+      </div>
+    </div>
+     <div class="profile_box">
+      <label class="profile_title">Work experience</label>
+      <div>
+      <textarea placeholder="Where do you currently work? How about 3 years ago?" class="textarea_inner" style="padding:8px"></textarea>
+      </div>
+    </div>
+    <div class="profile_box">
+      <label class="profile_title">Education</label>
+      <div>
+      <textarea placeholder="Where did you attend your uni and high school? How was your grade?" class="textarea_inner" style="padding:8px"></textarea>
+      </div>
+    </div>
+    <div style="margin-bottom:10px;margin-left:400px">
+      <label>
+        <button class="save_button" type="button" v-on:click="saveOnClick">Save</button>
+      </label>
+    </div>
+  </div>
       <div v-if="status===2" class="people_element" v-for="(history,index) in historyList">
-        <img class="avatar" :src="history.avatar" alt="icon">
+        <img class="avatar" :src="history.profile" alt="icon">
         <div class="brief" >
           <div class="name">
           {{history.name}}<br>
@@ -69,7 +121,7 @@
         <div class="horizontal_bar"></div>
       </div>
       <div v-if="status===3" class="people_element" v-for="(favorite,index) in favoriteList">
-        <img class="avatar" :src="favorite.avatar" alt="icon">
+        <img class="avatar" :src="favorite.profile" alt="icon">
         <div class="brief" >
           <div class="name">
           {{favorite.name}}<br>
@@ -98,7 +150,17 @@
         id:this.$route.params.id,
         historyList:null,
         favoriteList:null,
-        profile:null
+        card:null,
+        profile:null,
+        avatar:null,
+        gender:null,
+        firstname:null,
+        lastname:null,
+        model:null,
+        gender:null,
+        description:null,
+        experience:null,
+        education:null
         // 0: myCard 1:myAccount 2:ScanHistory 3:favorites
       }
     },
@@ -116,21 +178,47 @@
       }
     },
     mounted(){
+      this.getProfile();
       this.getHistoryList();
       this.getFavoriateList();
     },
     methods:{
+      getProfile:function(){
+        this.$store.dispatch("GET_PROFILE",{
+        })
+        .then(success=>{
+          this.profile = success.profile;
+          this.gender = success.gender;
+          this.firstname = success.firstname;
+          this.lastname = success.lastname;
+          this.model = success.model;
+          this.description = success.description;
+          this.experience = success.experence;
+          this.education = success.education;
+          this.getinitRadio('gender',this.gender);
+        })
+        .catch(error=>{
+        })
+      },
       deleteItem:function (index) {
-        this.$delete(this.historyList,index);
+        this.$store.dispatch("DELETE_ITEM",{
+          userid:this.favoriteList[index]._id
+        })
+        .then(success=>{
+           this.$delete(this.favoriteList,index);
+        })
+        .catch(error=>{
+          return;
+        })
       },
       getHistoryList:function(){
         this.$store.dispatch("GET_HISTORY",{
-          _id:this.id
         })
         .catch(error=>{
           return;
         })
         .then(data=>{
+
           var newhistorylist = {};
           var length = Object.keys(data.list).length;
           var i = 0;
@@ -143,7 +231,6 @@
       },
       getFavoriateList:function(){
         this.$store.dispatch("GET_FAVORIATE",{
-          _id:this.id
         })
         .catch(error=>{
           return;
@@ -159,13 +246,29 @@
           this.favoriteList = newfavoritelist;
         })
       },
-      //logoutclick:function(event){
-        //this.$store.dispatch("LOGOUT",{
-
-        //})
-      //}
-    }
+      logoutclick:function(event){
+        this.$store.dispatch("userLogout")
+        .catch(error=>{
+          return;
+        })
+        .then(success=>{
+          localStorage.removeItem('token');
+          this.$router.push("/login");
+          })
+        },
+    saveOnClick:function(event){
+      return;
+    },
+    getinitRadio:function(rName,rValue){
+        var rObj = document.getElementsByName(rName);
+        for(var i= 0;i<rObj.length;i++){
+          if(rObj[i].value == rValue){
+            rObj[i].checked = 'checked';
+          }
+        }
+      }
   }
+}
 </script>
 
 <style scoped>
@@ -324,12 +427,20 @@
     flex-wrap: wrap;
     justify-content: space-between;
   }
+
   div {
     opacity: 1;
     animation-name: fadeInOpacity;
     animation-iteration-count: 1;
     animation-timing-function: ease-out;
     animation-duration: 0.5s;
+  }
+
+  h2 {
+    margin-block-start: 0.4em;
+    margin-block-end: 0.4em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
   }
 
   @keyframes fadeInOpacity {
@@ -340,11 +451,66 @@
       opacity: 1;
     }
   }
+  
+  #gender_button{
+    text-align: center;
+    border-radius:5px;
+    font-size:14px;
+    width:70px;
+    height:30px;
+    margin-left:8px;
+  }
+  .save_button{
+    width: 90px;
+    height:30px;
+    text-align:center;
+    border-radius:5px;
+    background-color: rgb(59, 134, 255);
+    font-size:14px;
+    color:#ddd;
+  }
+  .textarea_inner{
+    width:650px;
+    height:60px;
+    border:1px solid #ddd;
+    font-size:px;
+    color:rgb(54, 54, 54);
+    border:1px solid #ddd;
+    border-radius: 5px;
+    resize:none;
+    margin-top:5px;
+  }
+  .profile_box{
+    margin-left:80px;
+    margin-bottom:10px;
+  }
+
+  .row{
+    display:flex;
+    flex-wrap:wrap;
+  }
+  .input_box{
+    text-align:left;
+    width: 80px;
+    height:10px;
+    font-family:Source Sans Pro,serif;
+    font-size:15px;
+    margin-left:8px;
+    padding:10px
+  }
+
+  .profile_title{
+    font-family:Source Sans Pro,serif;
+    font-size:15px;
+    font-weight:bold;
+    color:rgb(77, 79, 92);
+    
+  }
   .people_element{
     width:48%;
     height:30.5%;
     margin-bottom: 20px;
-    background:rgba(255,255,255,1);
+    background:white;
     box-shadow:0 2px 6px rgba(0,0,0,0.04);
     display: flex;
     flex-wrap: wrap;

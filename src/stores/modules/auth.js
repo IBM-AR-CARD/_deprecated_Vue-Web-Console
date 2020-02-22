@@ -5,11 +5,12 @@ export default{
     getters:{},
     mutations:{},
     actions:{
-        LOGIN:({commit},payload)=>{
+        userLogin:({commit},payload)=>{
             return new Promise((resolve,reject)=>{
                 axios.post('/user/login',payload)
                 .then(success=>{
                     if(success.status === 200){
+                        commit('LOGIN',success.data)
                         resolve(true);
                     }
                 })
@@ -18,11 +19,26 @@ export default{
                 })
             });
         },
+        userLogout:({commit},payload)=>{
+            return new Promise((resolve,reject)=>{
+                axios.post('/user/logout',data,{
+                    headers:{'Authorization':'Bearer ' + localStorage.getItem('token')}
+                })
+                .then(success=>{
+                    if(success.status === 200){
+                        resolve(true);
+                    }
+                })
+                .catch(error=>{
+                    reject(error);
+                })
+            })
+        },
         SIGNUP:({commit},payload)=>{
             return new Promise((resolve,reject)=>{
                 axios.post('/user/register',payload)
                 .then(success=>{
-                    if(success.response.status === 200){
+                    if(success.status === 200){
                         resolve(true);
                     }
                 })
