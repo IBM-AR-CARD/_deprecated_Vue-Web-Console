@@ -8,7 +8,7 @@ export default{
     actions:{
         GET_PROFILE:({commit},payload)=>{
             return new Promise((resolve,reject)=>{
-                axios.post('/profile/get')
+                axios.post('/profile/get?_id='+localStorage.getItem("id"),payload)
                 .then(success=>{
                     if(success.status=== 200){
                         resolve(success.data);

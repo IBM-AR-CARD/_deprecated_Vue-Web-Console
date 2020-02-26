@@ -5,7 +5,7 @@ export const mutations = {
         state.token = data.token;
         state.id = data._id
         localStorage.setItem('token',data.token);
-        localStorage.setItem('username',data.username);
+        localStorage.setItem('id',data._id);
     }
 }
 

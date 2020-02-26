@@ -15,9 +15,9 @@
       </label>
       <div   style="margin-top: 40px;">
         <label>
-          <input id="checkbox" type="checkbox" v-model="isRemember"><a style="font-size: 15px; color:rgb(67,66,93);vertical-align: middle;">Remember me</a>
+          <input id="checkbox" type="checkbox" v-model="isRemember"><a style="font-family: 'Open Sans';font-weight:bold; font-size: 14px; color:rgb(67,66,93);vertical-align: middle;">Remember me</a>
         </label>
-        <a id="forgot" v-on:click="forgetOnClick">Forgot password</a>
+        <a id="forgot" v-on:click="forgetOnClick" style="font-family: 'Open Sans'; font-size:14px; font-weight:bold">Forgot password</a>
       </div>
       <div  style="margin-top: 40px; ">
         <label>
