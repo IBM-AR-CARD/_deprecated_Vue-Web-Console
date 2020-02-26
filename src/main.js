@@ -20,27 +20,6 @@ new Vue({
   template: '<App/>',
 })
 
-/*axios.interceptors.request.use(
-  config=>{
-    if(config.url === '/user/login'){}
-      else{
-      if(localStorage.getItem('token')){
-        config.headers.Authorization = 'Bearer ' + localStorage.getItem('token'); 
-      }
-    }
-    return config;
-  },
-  error =>{
-    if(error.response){
-      switch(error.response.status){
-        case 401:
-          localStorage.removeItem('Authorization');
-          this.$router.push('/login');
-      }
-    }
-  }
-)*/
-
 router.beforeEach((to,from,next) =>{
   if(to.path === '/'){
     next();

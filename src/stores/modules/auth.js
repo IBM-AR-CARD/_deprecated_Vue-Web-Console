@@ -10,7 +10,8 @@ export default{
                 axios.post('/user/login',payload)
                 .then(success=>{
                     if(success.status === 200){
-                        commit('LOGIN',success.data)
+                        localStorage.setItem('token',success.data.token);
+                        localStorage.setItem('id',success.data._id);
                         resolve(true);
                     }
                 })

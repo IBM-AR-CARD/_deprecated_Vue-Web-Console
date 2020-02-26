@@ -49,8 +49,8 @@
       <p id="userName" >{{id}}</p>
       <img src="../../assets/spanlist.svg" alt="spanlist" style="position:absolute;width: 16px;right: 90px;height:16px;margin-top: -8px;
     top:50%">
-      <img src="http://henryz.co/uploads/123/1581643199591_compress.jpg" class = "avatar"  style="position:absolute;width: 40px;right: 20px;height: 40px;margin-top: -20px;
-    top:50%">
+      <img class = "avatar" :src="profile"  style="position:absolute;width: 40px;right: 20px;height: 40px;margin-top: -20px;
+    top:50%" >
     </div>
   </div>
     <h1 id="content_title">{{getContentTitle}}</h1>
@@ -209,7 +209,7 @@
       },
       deleteItem:function (index) {
         this.$store.dispatch("DELETE_FAVORITE",{
-          userid:this.favoriteList[index]._id
+          userid:this.favoriteList[index].userid
         })
         .then(success=>{
            this.$delete(this.favoriteList,index);
