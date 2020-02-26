@@ -50,7 +50,7 @@
       <img src="../../assets/spanlist.svg" alt="spanlist" style="position:absolute;width: 16px;right: 90px;height:16px;margin-top: -8px;
     top:50%">
       <img class = "avatar" :src="profile"  style="position:absolute;width: 40px;right: 20px;height: 40px;margin-top: -20px;
-    top:50%" >
+    top:50%">
     </div>
   </div>
     <h1 id="content_title">{{getContentTitle}}</h1>
@@ -59,11 +59,11 @@
       <div style="margin-top:20px;"  class="row">
         <div class= "profile_box">
           <span class="profile_title">Firstname:</span>
-          <span class="input_box">{{firstname}}</span>
+          <input class="input_box" v-model="firstname">
           </div>
           <div style="margin-left:150px" class="profile_box" >
             <span class="profile_title">Lastname:</span>
-            <span class="input_box">{{lastname}}</span>
+            <input class="input_box" v-model="lastname">
             </div>
             </div>
     <div class="row">
@@ -284,7 +284,7 @@
       .catch(error=>{
         alert("error!");
       })
-      }
+      },
   }
 }
 </script>
@@ -511,8 +511,8 @@
     text-align:left;
     width: 80px;
     height:10px;
-    font-family:Source Sans Pro,serif;
-    font-size:15px;
+    font-family:Open Sans;
+    font-size:13px;
     margin-left:8px;
     padding:10px
   }
