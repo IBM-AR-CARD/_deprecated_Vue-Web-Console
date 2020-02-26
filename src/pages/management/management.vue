@@ -70,15 +70,9 @@
       <div class="profile_box">
            <span class="profile_title" style="margin-right:35px;">Model:</span>
              <select v-model="model" style="height:20px;">
-               <option>{{model}}</option>
-               <option>TestMale</option>
-               <option>Luffy</option>
-               <option>YodaRigged</option>
-               <option>BusinessMale</option>
-               <option>BusinessFemale</option>
-               <option>SmartMale</option>
-               <option>SmartFemale</option>
-
+               <option v-for="option in options" v-bind:value="option.value">
+                 {{option.value}}
+               </option>
         </select>
       </div>
     </div>
@@ -150,7 +144,19 @@
   export default {
     name: 'management',
     data(){
+
       return{
+        options:[
+        {value:'TestMale'},
+        {value:'Luffy'},
+        {value:'FitFemale'},
+        {value:'Jiraiya'},
+        {value:'YodaRigged'},
+        {value:'BusinessMale'},
+        {value:'BusinessFemale'},
+        {value:'SmartMale'},
+        {value:'SmartFemale'}
+        ],
         status:0,
         id:this.$route.params.id,
         username:null,
