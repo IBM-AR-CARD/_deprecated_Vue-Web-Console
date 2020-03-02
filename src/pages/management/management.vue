@@ -139,7 +139,6 @@
 </template>
 
 <script>
-  import request from '../../utils/request'
   import axios from 'axios'
   export default {
     name: 'management',
@@ -197,7 +196,7 @@
     methods:{
       getProfile:function(){
         this.$store.dispatch("GET_PROFILE",{
-          _id:localStorage.getItem("username")
+          _id:localStorage.getItem("id")
         })
         .then(success=>{
           this.profile = success.profile;
