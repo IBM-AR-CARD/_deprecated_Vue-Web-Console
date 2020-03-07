@@ -40,23 +40,31 @@
   </div>
   <div id="right">
   <div id="topBar">
-    <p id="barTitle">Management Console</p>
+    <p id="barTitle" style="font-family: 'Lato', sans-serif;">Management Console</p>
     <div id="right_title" >
       <img src="../../assets/earth.svg" alt="earth" >
       <img src="../../assets/message_icon.svg" alt="message" style="padding-left: 30px">
       <img src="../../assets/Notification.svg" alt="Notification" style="padding-left: 30px">
       <div id="greyBar"></div>
-      <p id="userName" >{{id}}</p>
+      <p id="userName" style="font-family: 'Lato', sans-serif;">{{id}}</p>
       <img src="../../assets/spanlist.svg" alt="spanlist" style="position:absolute;width: 16px;right: 90px;height:16px;margin-top: -8px;
     top:50%">
       <img class = "avatar" :src="profile"  style="position:absolute;width: 40px;right: 20px;height: 40px;margin-top: -20px;
     top:50%">
     </div>
   </div>
-    <h1 id="content_title">{{getContentTitle}}</h1>
+  <div id="content_header">
+    <h1 id="content_title" display="inline-block">{{getContentTitle}}</h1>
+    <div v-if="status===2||status===3">
+    <div id="search_box">
+    <input class = "search_input_box" type ="text" name="" placeholder="search" v-model="keyword">
+    <img src="../../assets/search.svg" alt="search" class="searchpng" v-on:click="searchOnClick">
+    </div>
+    </div>
+  </div>
     <div id="content" v-bind:style="[status===0||status===1 ? {'background-color':'rgb(255,255,255)'} : {'background-color':'rgb(240,240,247)'}]">
       <div v-if="status===0">
-      <div style="margin-top:20px;"  class="row">
+      <div style="margin-top:15px;"  class="row">
         <div class= "profile_box">
           <span class="profile_title">Firstname:</span>
           <input class="input_box" v-model="firstname">
@@ -78,8 +86,8 @@
     </div>
       <div class="profile_box" >
         <span class="profile_title" style="margin-right:18px;" >Gender:</span>
-          <input v-model="gender" name="gender" type="radio" value='2' ><label style="font-family: 'Open Sans'; font-weight:bold; font-size:14px; margin-left:10px">Male</label>
-           <input v-model="gender" name="gender" type="radio" value='1'><label  style="font-family: 'Open Sans'; font-weight:bold; font-size:14px; margin-left:10px">Female</label>
+          <input v-model="gender" name="gender" type="radio" value='2' ><label style=" font-family: 'Lato', sans-serif;; font-weight:bold; font-size:14px; margin-left:10px">Male</label>
+           <input v-model="gender" name="gender" type="radio" value='1'><label  style=" font-family: 'Lato', sans-serif;'; font-weight:bold; font-size:14px; margin-left:10px">Female</label>
       </div>
     <div class="profile_box">
       <label class="profile_title">One-Sentence Description</label>
@@ -98,11 +106,6 @@
       <div>
       <textarea v-model="education" placeholder="Where did you attend your uni and high school? How was your grade?" class="textarea_inner" style="padding:8px"></textarea>
       </div>
-    </div>
-    <div style="margin-bottom:10px;margin-left:400px">
-      <label>
-        <button class="save_button" type="button" v-on:click="saveOnClick">Save</button>
-      </label>
     </div>
   </div>
       <div v-if="status===2" class="people_element" v-for="(history,index) in historyList">
@@ -134,8 +137,16 @@
         <div class="horizontal_bar"></div>
       </div>
     </div>
+    <div v-if="status===0">
+       <div style="margin-bottom:10px;margin-left:400px">
+      <label>
+        <button class="save_button" type="button" v-on:click="saveOnClick">Save</button>
+      </label>
+    </div>
   </div>
-</div>
+  
+  </div>
+  </div>
 </template>
 
 <script>
@@ -143,7 +154,6 @@
   export default {
     name: 'management',
     data(){
-
       return{
         options:[
         {value:'TestMale'},
@@ -171,7 +181,8 @@
         gender:null,
         description:null,
         experience:null,
-        education:null
+        education:null,
+        keyword:null,
         // 0: myCard 1:myAccount 2:ScanHistory 3:favorites
       }
     },
@@ -182,7 +193,7 @@
         }else if(this.status===1){
           return 'My account'
         }else if(this.status===2){
-          return 'History'
+          return 'Scan history'
         }else if(this.status===3){
           return 'Favorite'
         }
@@ -230,7 +241,6 @@
           return;
         })
         .then(data=>{
-
           var newhistorylist = {};
           var length = Object.keys(data.list).length;
           var i = 0;
@@ -284,7 +294,67 @@
         alert("error!");
       })
       },
-  }
+      searchOnClick:function(event){
+        if(this.status === 2){
+          this.$store.dispatch("GET_HISTORY",{
+        })
+        .catch(error=>{
+          return;
+        })
+          .then(data=>{
+          var newhistorylist = {};
+          var length = Object.keys(data.list).length;
+          var i = 0;
+          for(i = 0; i <length;i++){
+            var x = i.toString();
+            newhistorylist[x] = JSON.parse(JSON.stringify(data.list[i]));
+          }
+        if(this.keyword===null){
+          this.historyList = newhistorylist;
+          return;
+        }
+        var searchlist = [];
+        var index = 0;
+        for(index = 0;index<Object.keys(newhistorylist).length;index++){
+          if (newhistorylist[index].name.toUpperCase().indexOf(this.keyword.toUpperCase()) > -1)
+        {
+        searchlist.push(newhistorylist[index])
+        }
+        }
+      this.historyList = searchlist;
+          })
+      }
+      else if(this.status === 3){
+        this.$store.dispatch("GET_FAVORIATE",{
+        })
+        .catch(error=>{
+          return;
+        })
+          .then(data=>{
+         var newfavoritelist = {};
+          var length = Object.keys(data.list).length;
+          var i = 0;
+          for(i = 0; i <length;i++){
+            var x = i.toString();
+            newfavoritelist[x] = JSON.parse(JSON.stringify(data.list[i]));
+          }
+        if(this.keyword===null){
+           this.favoriteListt = newfavoritelist;
+          return;
+        }
+        var searchlist = [];
+        var index = 0;
+        for(index = 0;index<Object.keys(newfavoritelist).length;index++){
+          if (newfavoritelist[index].name.toUpperCase().indexOf(this.keyword.toUpperCase()) > -1)
+        {
+        searchlist.push(newfavoritelist[index])
+        }
+        }
+      this.favoriteList = searchlist;
+          })
+      }
+      }
+    }
 }
 </script>
 
@@ -337,14 +407,12 @@
     height: 100%;
     width: 5px;
     transition: background-color 0.2s ease-in-out ;
-
   }
   #navigator_content{
     transition: background-color 0.3s ease-in-out;
     position: relative;
     height: 100%;
     width:100%;
-
   }
   .navigator_image{
     width: 16px;
@@ -396,7 +464,6 @@
     width:500px;
     margin-right: 0;
     display: inline-flex;
-
   }
   #greyBar{
     width:1px;
@@ -421,14 +488,19 @@
     top:50%;
     text-align: center;
   }
+  #content_header{
+    flex-grow:1;
+    width:80%;
+    height:5%;
+    display:relative;
+    flex-direction: row;
+    padding:15px 0;
+    margin-bottom:2%;
+  }
   #content_title{
-    vertical-align: center;
-    width: 80%;
-    height:70px;
+    font-family: 'Raleway', sans-serif;
+    float:left;
     font-size:28px;
-    font-family:Source Sans Pro,serif;
-    font-weight:400;
-    line-height:40px;
     color:rgba(67,66,93,1);
     transition: background-color 0.2s ease-in-out ;
   }
@@ -437,7 +509,7 @@
     width: 80%;
     height: 90%;
     background-color: white;
-    margin-bottom: 5%;
+    margin-bottom: 1%;
     transition: background-color 0.3s ease;
     display: flex;
     flex-direction: row;
@@ -445,6 +517,20 @@
     justify-content: space-between;
   }
 
+  #search_box{
+    float:right;
+    margin-top:20px;
+  }
+
+  .search_input_box{
+    height:25px;
+    width:100px;
+    text-align:left;
+    border:0px;
+    border-bottom: solid 1px rgb(54, 54, 54);
+    font-family: 'Lato', sans-serif;
+    background-color:rgb(240,240,247)
+  }
   div {
     opacity: 1;
     animation-name: fadeInOpacity;
@@ -452,14 +538,12 @@
     animation-timing-function: ease-out;
     animation-duration: 0.5s;
   }
-
   h2 {
     margin-block-start: 0.4em;
     margin-block-end: 0.4em;
     margin-inline-start: 0px;
     margin-inline-end: 0px;
   }
-
   @keyframes fadeInOpacity {
     0% {
       opacity: 0;
@@ -487,6 +571,8 @@
     color:#ddd;
   }
   .textarea_inner{
+    font-family: 'Lato', sans-serif;
+    font-size:13px;
     width:700px;
     height:60px;
     border:1px solid #ddd;
@@ -501,7 +587,6 @@
     margin-left:80px;
     margin-bottom:10px;
   }
-
   .row{
     display:flex;
     flex-wrap:wrap;
@@ -510,12 +595,11 @@
     text-align:left;
     width: 80px;
     height:10px;
-    font-family:Open Sans;
-    font-size:13px;
+    font-family: 'Lato', sans-serif;
+    font-size:14px;
     margin-left:8px;
     padding:10px
   }
-
   .profile_title{
     font-family:Source Sans Pro,serif;
     font-size:15px;
@@ -546,13 +630,12 @@
     margin-top: 14px;
     margin-left: 20px;
     user-select: none;
-
   }
   .name{
     width:100%;
     height:25px;
     font-size:18px;
-    font-family:Source Sans Pro,serif;
+    font-family: 'Lato', sans-serif;
     font-weight:bold;
     line-height:13px;
     color:rgba(77,79,92,1);
@@ -561,7 +644,7 @@
     width:100%;
     height:40px;
     font-size:15px;
-    font-family:Source Sans Pro,serif;
+    font-family: 'Lato', sans-serif;
     font-weight:400;
     line-height:25px;
     color:rgba(67,66,93,1);
@@ -581,5 +664,13 @@
     width:15px;
     height: 15px;
     user-select: none;
+  }
+  .searchpng{
+    position:relative;
+    top:3px;
+    right:20px;
+    width:15px;
+    height:15px;
+    user-select:none;
   }
 </style>
